@@ -7,7 +7,7 @@ namespace SARP.Entitys
     public class Character : MonoBehaviour
     {
         private System.Tuple<bool, Walker> walker = System.Tuple.Create<bool, Walker>(false, null);
-        protected Walker Walker
+        public Walker Walker
         {
             get
             {
@@ -21,7 +21,7 @@ namespace SARP.Entitys
         }
 
         private System.Tuple<bool, Assaulter> assaulter = System.Tuple.Create<bool, Assaulter>(false, null);
-        protected Assaulter Assaulter
+        public Assaulter Assaulter
         {
             get
             {
@@ -35,7 +35,7 @@ namespace SARP.Entitys
         }
 
         private System.Tuple<bool, Victim> victim = System.Tuple.Create<bool, Victim>(false, null);
-        protected Victim Victim
+        public Victim Victim
         {
             get
             {
