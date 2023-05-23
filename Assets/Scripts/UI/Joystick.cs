@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace TCF.UI
+namespace SARPG.UI
 {
     public class Joystick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
