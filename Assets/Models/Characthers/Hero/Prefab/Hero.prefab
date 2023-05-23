@@ -979,6 +979,7 @@ GameObject:
   - component: {fileID: 5347070450509636086}
   - component: {fileID: 1231406649913117651}
   - component: {fileID: 3928860843705987323}
+  - component: {fileID: 8408716063884878611}
   m_Layer: 0
   m_Name: Hero
   m_TagString: Untagged
@@ -1015,7 +1016,7 @@ Animator:
   m_Controller: {fileID: 22100000, guid: 5b10a4715a743524a85fdffa68befdaa, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -1035,7 +1036,7 @@ CharacterController:
   m_Height: 1.4
   m_Radius: 0.27
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0.1
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.7, z: 0}
@@ -1090,8 +1091,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cef5172cb2bd474895b0582eb026f3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 2
+  rotationSpeed: 5
   moveSpeed: 5
+--- !u!114 &8408716063884878611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3573660244493630045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40e4932be7bebe64c839c08e9521e3b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3628872447502817542
 GameObject:
   m_ObjectHideFlags: 0

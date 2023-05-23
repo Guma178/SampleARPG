@@ -43,11 +43,11 @@ namespace SARP.Entitys
 
         public void BeginWalk()
         {
-            Animator.SetBool("Walk", true);
+            Animator.SetBool("Move", true);
         }
         public void EndWalk()
         {
-            Animator.SetBool("Walk", false);
+            Animator.SetBool("Move", false);
         }
 
         public void Walk(Vector3 direction)
@@ -56,6 +56,20 @@ namespace SARP.Entitys
             {
                 Mover.Move(direction);
             }
+        }
+
+        public void Walk(Vector3 target, ProcessState state)
+        {
+            state.Finished += delegate () { EndWalk(); };
+            Mover.MoveTo(target, state);
+            BeginWalk();
+        }
+
+        public void Walk(Transform target, ProcessState state)
+        {
+            state.Finished += delegate () { EndWalk(); };
+            Mover.MoveTo(target, state);
+            BeginWalk();
         }
     }
 }
