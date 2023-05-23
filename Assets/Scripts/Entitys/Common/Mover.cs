@@ -11,6 +11,9 @@ namespace SARP.Entitys
         [SerializeField]
         float rotationSpeed, moveSpeed;
 
+        [SerializeField]
+        Renderer bodyrenderer;
+
         public float RotationSpeed => rotationSpeed;
         public float MoveSpeed => moveSpeed;
 
@@ -28,17 +31,11 @@ namespace SARP.Entitys
             }
         }
 
-        private System.Tuple<bool, Renderer> bodyrenderer = System.Tuple.Create<bool, Renderer>(false, null);
         private Renderer Renderer
         {
             get
             {
-                if (!bodyrenderer.Item1)
-                {
-                    bodyrenderer = System.Tuple.Create<bool, Renderer>(true, this.GetComponent<Renderer>());
-                }
-
-                return bodyrenderer.Item2;
+                return bodyrenderer;
             }
         }
         private System.Tuple<bool, CharacterController> characterController = System.Tuple.Create<bool, CharacterController>(false, null);
