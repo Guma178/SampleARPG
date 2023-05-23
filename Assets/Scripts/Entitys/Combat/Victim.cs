@@ -2,63 +2,76 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Victim : MonoBehaviour
+namespace SARP.Entitys
 {
-    [SerializeField]
-    float maximalHealth;
-
-    public event System.Action<float> HealthChanged;
-    public event System.Action Died;
-
-    private float health;
-    public virtual float Health
+    public class Victim : MonoBehaviour
     {
-        get 
+        [SerializeField]
+        float maximalHealth;
+
+        public bool Able
         {
-            return health;
+            get;
+            private set;
         }
 
-        private set
+        public event System.Action<float> HealthChanged;
+        public event System.Action Died;
+
+        private float health;
+        public virtual float Health
         {
-            if (value > maximalHealth)
+            get
             {
-                health = maximalHealth;
-            }
-            else
-            {
-                health = value;
+                return health;
             }
 
-            if (value < 0)
+            private set
             {
-                health = 0;
-            }
+                if (value > maximalHealth)
+                {
+                    health = maximalHealth;
+                }
+                else
+                {
+                    health = value;
+                }
 
-            if (health == 0)
-            {
-                Died?.Invoke();
-            }
+                if (value < 0)
+                {
+                    Able = false;
+                    health = 0;
+                }
 
-            HealthChanged?.Invoke(value);
+                if (health == 0)
+                {
+                    Died?.Invoke();
+                }
+
+                HealthChanged?.Invoke(value);
+            }
         }
-    }
 
-    private Transform thisTransorm;
-    public Transform ThisTransorm
-    {
-        get
+        private Transform thisTransorm;
+        public Transform ThisTransorm
         {
-            if (thisTransorm == null)
+            get
             {
-                thisTransorm = this.transform;
+                if (thisTransorm == null)
+                {
+                    thisTransorm = this.transform;
+                }
+
+                return thisTransorm;
             }
-
-            return thisTransorm;
         }
-    }
 
-    public void Hit(float power)
-    {
-        Health -= power;
+        public void Hit(float power)
+        {
+            if (Able)
+            {
+                Health -= power;
+            }
+        }
     }
 }

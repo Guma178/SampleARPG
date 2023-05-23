@@ -9,6 +9,12 @@ namespace SARP.Entitys
         [SerializeField]
         float attackRange, attackPower;
 
+        public bool Able
+        {
+            get;
+            set;
+        }
+
         public virtual float AttackRange => attackRange;
         public virtual float AttackPower => attackPower;
 
@@ -30,11 +36,14 @@ namespace SARP.Entitys
         { 
             Vector3 distance = victim.ThisTransorm.position - thisTransorm.position;
 
-            if (distance.magnitude <= AttackRange)
+            if (Able)
             {
-                if (Vector3.Angle(ThisTransorm.forward, distance.normalized) < 25)
+                if (distance.magnitude <= AttackRange)
                 {
-                    victim.Hit(AttackPower);
+                    if (Vector3.Angle(ThisTransorm.forward, distance.normalized) < 25)
+                    {
+                        victim.Hit(AttackPower);
+                    }
                 }
             }
         }
