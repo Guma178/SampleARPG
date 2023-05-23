@@ -147,15 +147,15 @@ namespace SARP.Entitys
             }
         }
             
-        private IEnumerator MovingTo(Transform target, ProcessState processState, float distance = 0, bool targetRotation = false)
+        private IEnumerator MovingTo(Transform target, ProcessState processState, float distance = 0, bool targetRotation = false, bool inPlane = false)
         {
             Vector3 toTarget;
 
             toTarget = (target.position - ThisTransorm.position);
-            while (toTarget.magnitude > (distance) + MoveSpeed * Time.deltaTime * 2)
+            while ((inPlane ? Vector3.ProjectOnPlane(toTarget, ThisTransorm.up).magnitude : toTarget.magnitude) > (distance) + Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude / 2 + MoveSpeed * Time.deltaTime * 2)
             {
                 toTarget = (target.position - ThisTransorm.position);
-                Toward(toTarget.normalized);
+                Toward(inPlane ? Vector3.ProjectOnPlane(toTarget, ThisTransorm.up) : toTarget);
                 yield return new WaitForEndOfFrame();
             }
             if (targetRotation)
@@ -177,15 +177,15 @@ namespace SARP.Entitys
             movingProcess = null;
             movingState = null;
         }
-        private IEnumerator MovingTo(Vector3 target, ProcessState processState)
+        private IEnumerator MovingTo(Vector3 target, ProcessState processState, bool inPlane = false)
         {
             Vector3 toTarget;
 
             toTarget = (target - ThisTransorm.position);
-            while (toTarget.magnitude > MoveSpeed * Time.deltaTime * 2)
+            while ((inPlane ? Vector3.ProjectOnPlane(toTarget, ThisTransorm.up).magnitude : toTarget.magnitude) > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude / 2 + MoveSpeed * Time.deltaTime * 2)
             {
                 toTarget = (target - ThisTransorm.position);
-                Toward(toTarget);
+                Toward(inPlane ? Vector3.ProjectOnPlane(toTarget, ThisTransorm.up) : toTarget);
                 yield return new WaitForEndOfFrame();
             }
             SetPosition(target, ThisTransorm.rotation);
