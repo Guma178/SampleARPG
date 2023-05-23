@@ -11,16 +11,8 @@ namespace SARP.Entitys
         [SerializeField]
         float rotationSpeed, moveSpeed;
 
-        private bool movable = true;
-
         public float RotationSpeed => rotationSpeed;
         public float MoveSpeed => moveSpeed;    
-        public bool Movable
-        {
-            get { return movable; }
-
-            private set { movable = value; }
-        }
 
         private Transform thisTransorm;
         private Transform ThisTransorm
@@ -77,26 +69,38 @@ namespace SARP.Entitys
             }
         }
 
+        private Coroutine movingProcess;
+        private ProcessState movingState;
+
+
         public void MoveTo(Vector3 target, ProcessState processState)
         {
-            if (Movable)
+            if (movingProcess !=null && movingState != null)
             {
-                StartCoroutine(MovingTo(target, processState));
+                StopCoroutine(movingProcess);
+                movingState.Interrupt();
             }
+            movingProcess = StartCoroutine(MovingTo(target, processState));
+            movingState = processState;
         }
         public void MoveTo(Transform target, ProcessState processState)
         {
-            if (Movable)
+            if (movingProcess != null && movingState != null)
             {
-                StartCoroutine(MovingTo(target, processState));
+                StopCoroutine(movingProcess);
+                movingState.Interrupt();
             }
+            movingProcess = StartCoroutine(MovingTo(target, processState));
+            movingState = processState;
         }
         public void Move(Vector3 direction)
         {
-            if (Movable)
+            if (movingProcess != null && movingState != null)
             {
-                Toward(direction);
+                StopCoroutine(movingProcess);
+                movingState.Interrupt();
             }
+            Toward(direction);
         }
         public void SetPosition(Vector3 position, Quaternion rotation)
         {
@@ -147,8 +151,6 @@ namespace SARP.Entitys
         {
             Vector3 toTarget;
 
-            processState.Finished += delegate () { Movable = true;  };
-            Movable = false;
             toTarget = (target.position - ThisTransorm.position);
             while (toTarget.magnitude > (distance) + MoveSpeed * Time.deltaTime * 2)
             {
@@ -171,15 +173,14 @@ namespace SARP.Entitys
             {
                 SetPosition(target.position, ThisTransorm.rotation);
             }
-            Movable = true;
             processState?.Complet();
+            movingProcess = null;
+            movingState = null;
         }
         private IEnumerator MovingTo(Vector3 target, ProcessState processState)
         {
             Vector3 toTarget;
 
-            processState.Finished += delegate () { Movable = true; };
-            Movable = false;
             toTarget = (target - ThisTransorm.position);
             while (toTarget.magnitude > MoveSpeed * Time.deltaTime * 2)
             {
@@ -188,8 +189,9 @@ namespace SARP.Entitys
                 yield return new WaitForEndOfFrame();
             }
             SetPosition(target, ThisTransorm.rotation);
-            Movable = true;
             processState?.Complet();
+            movingProcess = null;
+            movingState = null;
         }
     }
 }
