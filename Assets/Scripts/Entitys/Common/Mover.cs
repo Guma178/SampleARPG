@@ -12,7 +12,7 @@ namespace SARP.Entitys
         float rotationSpeed, moveSpeed;
 
         public float RotationSpeed => rotationSpeed;
-        public float MoveSpeed => moveSpeed;    
+        public float MoveSpeed => moveSpeed;
 
         private Transform thisTransorm;
         private Transform ThisTransorm
@@ -73,24 +73,24 @@ namespace SARP.Entitys
         private ProcessState movingState;
 
 
-        public void MoveTo(Vector3 target, ProcessState processState)
-        {
-            if (movingProcess !=null && movingState != null)
-            {
-                StopCoroutine(movingProcess);
-                movingState.Interrupt();
-            }
-            movingProcess = StartCoroutine(MovingTo(target, processState));
-            movingState = processState;
-        }
-        public void MoveTo(Transform target, ProcessState processState)
+        public void MoveTo(Vector3 target, ProcessState processState, bool inPlane = false)
         {
             if (movingProcess != null && movingState != null)
             {
                 StopCoroutine(movingProcess);
                 movingState.Interrupt();
             }
-            movingProcess = StartCoroutine(MovingTo(target, processState));
+            movingProcess = StartCoroutine(MovingTo(target, processState, inPlane));
+            movingState = processState;
+        }
+        public void MoveTo(Transform target, ProcessState processState, bool targetRotation = false, bool inPlane = false)
+        {
+            if (movingProcess != null && movingState != null)
+            {
+                StopCoroutine(movingProcess);
+                movingState.Interrupt();
+            }
+            movingProcess = StartCoroutine(MovingTo(target, processState, 0, targetRotation, inPlane));
             movingState = processState;
         }
         public void Move(Vector3 direction)
@@ -146,7 +146,7 @@ namespace SARP.Entitys
                 ThisTransorm.Translate(translation, Space.World);
             }
         }
-            
+
         private IEnumerator MovingTo(Transform target, ProcessState processState, float distance = 0, bool targetRotation = false, bool inPlane = false)
         {
             Vector3 toTarget;
