@@ -119,17 +119,17 @@ namespace SARP.Entitys
             Quaternion rot = Quaternion.LookRotation(direction.normalized, ThisTransorm.up);
             targetAngle = Vector3.Angle(ThisTransorm.forward, direction);
             acceleration = ((180f - targetAngle) / 180f);
-            Vector3 translation = ThisTransorm.forward * acceleration * MoveSpeed * Time.deltaTime;
+            Vector3 translation = ThisTransorm.forward * MoveSpeed * Time.deltaTime;
             if (CharacterController != null)
             {
-                ThisTransorm.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed);
+                ThisTransorm.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed);
                 CharacterController.Move(translation);
             }
             else if (Movablebody != null)
             {
                 if (Movablebody.isKinematic)
                 {
-                    Movablebody.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed);
+                    Movablebody.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed);
                     Movablebody.MovePosition(Movablebody.position + translation);
                 }
                 else
@@ -139,7 +139,7 @@ namespace SARP.Entitys
             }
             else
             {
-                ThisTransorm.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed);
+                ThisTransorm.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed);
                 ThisTransorm.Translate(translation, Space.World);
             }
         }
@@ -148,11 +148,11 @@ namespace SARP.Entitys
         {
             Vector3 toTarget;
 
-            toTarget = (target.position - ThisTransorm.position);
-            while ((inPlane ? Vector3.ProjectOnPlane(toTarget, ThisTransorm.up).magnitude : toTarget.magnitude) > (distance) + Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude / 2 + MoveSpeed * Time.deltaTime * 2)
+            toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
+            while (toTarget.magnitude > (distance) + Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude * 0.2f + MoveSpeed * Time.deltaTime * 2)
             {
-                toTarget = (target.position - ThisTransorm.position);
-                Toward(inPlane ? Vector3.ProjectOnPlane(toTarget, ThisTransorm.up) : toTarget);
+                toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
+                Toward(toTarget);
                 yield return new WaitForEndOfFrame();
             }
             if (targetRotation)
@@ -164,11 +164,6 @@ namespace SARP.Entitys
                     yield return new WaitForEndOfFrame();
                     angle = Quaternion.Angle(ThisTransorm.rotation, target.rotation);
                 }
-                SetPosition(target.position, target.rotation);
-            }
-            else
-            {
-                SetPosition(target.position, ThisTransorm.rotation);
             }
             processState?.Complet();
             movingProcess = null;
@@ -178,14 +173,13 @@ namespace SARP.Entitys
         {
             Vector3 toTarget;
 
-            toTarget = (target - ThisTransorm.position);
-            while ((inPlane ? Vector3.ProjectOnPlane(toTarget, ThisTransorm.up).magnitude : toTarget.magnitude) > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude / 2 + MoveSpeed * Time.deltaTime * 2)
+            toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
+            while (toTarget.magnitude > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude * 0.2f + MoveSpeed * Time.deltaTime * 2)
             {
-                toTarget = (target - ThisTransorm.position);
-                Toward(inPlane ? Vector3.ProjectOnPlane(toTarget, ThisTransorm.up) : toTarget);
+                toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
+                Toward(toTarget);
                 yield return new WaitForEndOfFrame();
             }
-            SetPosition(target, ThisTransorm.rotation);
             processState?.Complet();
             movingProcess = null;
             movingState = null;
