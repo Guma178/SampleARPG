@@ -1093,6 +1093,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 5
   moveSpeed: 5
+  bodyrenderer: {fileID: 7604207962249949042}
 --- !u!114 &8408716063884878611
 MonoBehaviour:
   m_ObjectHideFlags: 0
