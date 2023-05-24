@@ -61,14 +61,14 @@ namespace SARP.Entitys
         public void Walk(Vector3 target, ProcessState state)
         {
             state.Finished += delegate () { EndWalk(); };
-            Mover.MoveTo(target, state, );
+            Mover.MoveTo(target, state, false, true);
             BeginWalk();
         }
 
         public void Walk(Transform target, ProcessState state)
         {
             state.Finished += delegate () { EndWalk(); };
-            Mover.MoveTo(target, state);
+            Mover.MoveTo(target, state, false, false, true);
             BeginWalk();
         }
     }
