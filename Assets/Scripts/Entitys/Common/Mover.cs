@@ -70,7 +70,7 @@ namespace SARP.Entitys
         private ProcessState movingState;
 
 
-        public void MoveTo(Vector3 target, ProcessState processState, bool inPlane = false)
+        public void MoveTo(Vector3 target, ProcessState processState, bool align = false, bool inPlane = false)
         {
             if (movingProcess != null && movingState != null)
             {
@@ -80,14 +80,14 @@ namespace SARP.Entitys
             movingProcess = StartCoroutine(MovingTo(target, processState, inPlane));
             movingState = processState;
         }
-        public void MoveTo(Transform target, ProcessState processState, bool targetRotation = false, bool inPlane = false)
+        public void MoveTo(Transform target, ProcessState processState, bool align = false, bool inheritRotation = false, bool inPlane = false)
         {
             if (movingProcess != null && movingState != null)
             {
                 StopCoroutine(movingProcess);
                 movingState.Interrupt();
             }
-            movingProcess = StartCoroutine(MovingTo(target, processState, 0, targetRotation, inPlane));
+            movingProcess = StartCoroutine(MovingTo(target, processState, align, inheritRotation, inPlane));
             movingState = processState;
         }
         public void Move(Vector3 direction)
@@ -105,6 +105,11 @@ namespace SARP.Entitys
             {
                 Movablebody.MovePosition(position);
                 Movablebody.rotation = rotation;
+            }
+            else if(CharacterController != null)
+            {
+                CharacterController.Move(position = ThisTransorm.position);
+                ThisTransorm.rotation = rotation;
             }
             else
             {
@@ -144,18 +149,18 @@ namespace SARP.Entitys
             }
         }
 
-        private IEnumerator MovingTo(Transform target, ProcessState processState, float distance = 0, bool targetRotation = false, bool inPlane = false)
+        private IEnumerator MovingTo(Transform target, ProcessState processState, bool align = false, bool inheritRotation = false, bool inPlane = false)
         {
             Vector3 toTarget;
 
             toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
-            while (toTarget.magnitude > (distance) + Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude * 0.2f + MoveSpeed * Time.deltaTime * 2)
+            while (toTarget.magnitude > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude * 0.2f + MoveSpeed * Time.deltaTime * 2)
             {
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
                 Toward(toTarget);
                 yield return new WaitForEndOfFrame();
             }
-            if (targetRotation)
+            if (inheritRotation)
             {
                 float angle = Quaternion.Angle(ThisTransorm.rotation, target.rotation);
                 while (angle > 3)
@@ -165,11 +170,23 @@ namespace SARP.Entitys
                     angle = Quaternion.Angle(ThisTransorm.rotation, target.rotation);
                 }
             }
+            if (align)
+            {
+                toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
+                if (inheritRotation)
+                {
+                    SetPosition(toTarget, target.rotation);
+                }
+                else
+                {
+                    SetPosition(toTarget, ThisTransorm.rotation);
+                }
+            }
             processState?.Complet();
             movingProcess = null;
             movingState = null;
         }
-        private IEnumerator MovingTo(Vector3 target, ProcessState processState, bool inPlane = false)
+        private IEnumerator MovingTo(Vector3 target, ProcessState processState, bool align = false, bool inPlane = false)
         {
             Vector3 toTarget;
 
@@ -179,6 +196,11 @@ namespace SARP.Entitys
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
                 Toward(toTarget);
                 yield return new WaitForEndOfFrame();
+            }
+            if (align)
+            {
+                toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
+                SetPosition(toTarget, ThisTransorm.rotation);
             }
             processState?.Complet();
             movingProcess = null;
