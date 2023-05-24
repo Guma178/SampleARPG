@@ -77,7 +77,7 @@ namespace SARP.Entitys
                 StopCoroutine(movingProcess);
                 movingState.Interrupt();
             }
-            movingProcess = StartCoroutine(MovingTo(target, processState, inPlane));
+            movingProcess = StartCoroutine(MovingTo(target, processState, align, inPlane));
             movingState = processState;
         }
         public void MoveTo(Transform target, ProcessState processState, bool align = false, bool inheritRotation = false, bool inPlane = false)
