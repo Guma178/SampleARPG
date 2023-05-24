@@ -106,9 +106,9 @@ namespace SARP.Entitys
                 Movablebody.MovePosition(position);
                 Movablebody.rotation = rotation;
             }
-            else if(CharacterController != null)
+            else if (CharacterController != null)
             {
-                CharacterController.Move(position = ThisTransorm.position);
+                CharacterController.Move(position - ThisTransorm.position);
                 ThisTransorm.rotation = rotation;
             }
             else
@@ -175,11 +175,11 @@ namespace SARP.Entitys
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
                 if (inheritRotation)
                 {
-                    SetPosition(toTarget, target.rotation);
+                    SetPosition(ThisTransorm.position + toTarget, target.rotation);
                 }
                 else
                 {
-                    SetPosition(toTarget, ThisTransorm.rotation);
+                    SetPosition(ThisTransorm.position + toTarget, ThisTransorm.rotation);
                 }
             }
             processState?.Complet();
@@ -200,7 +200,7 @@ namespace SARP.Entitys
             if (align)
             {
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
-                SetPosition(toTarget, ThisTransorm.rotation);
+                SetPosition(ThisTransorm.position + toTarget, ThisTransorm.rotation);
             }
             processState?.Complet();
             movingProcess = null;
