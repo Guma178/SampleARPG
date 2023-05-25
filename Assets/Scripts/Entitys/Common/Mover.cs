@@ -119,7 +119,7 @@ namespace SARP.Entitys
                 movingState.Interrupt();
             }
             movingProcess = StartCoroutine(MovingTo(target, processState, accuracy, align, inheritRotation, inPlane));
-            movingState = processState; 
+            movingState = processState;
         }
         public void Move(Vector3 direction)
         {
@@ -183,10 +183,12 @@ namespace SARP.Entitys
 
         private IEnumerator MovingTo(Transform target, ProcessState processState, float accuracy = 0, bool align = false, bool inheritRotation = false, bool inPlane = false)
         {
+            float selfSize;
             Vector3 toTarget;
 
+            selfSize = Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2;
             toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
-            while (toTarget.magnitude > Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2f + MoveSpeed * Time.deltaTime * 2 + accuracy)
+            while (toTarget.magnitude > selfSize + MoveSpeed * Time.deltaTime * 2 + accuracy)
             {
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
                 Toward(toTarget);
@@ -227,12 +229,14 @@ namespace SARP.Entitys
             movingProcess = null;
             movingState = null;
         }
-        private IEnumerator MovingTo(Vector3 target, ProcessState processState, float accuracy = 0,  bool align = false, bool inPlane = false)
+        private IEnumerator MovingTo(Vector3 target, ProcessState processState, float accuracy = 0, bool align = false, bool inPlane = false)
         {
+            float selfSize;
             Vector3 toTarget;
 
+            selfSize = Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2;
             toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
-            while (toTarget.magnitude > Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2 + MoveSpeed * Time.deltaTime * 2 + accuracy)
+            while (toTarget.magnitude > selfSize + MoveSpeed * Time.deltaTime * 2 + accuracy)
             {
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
                 Toward(toTarget);
