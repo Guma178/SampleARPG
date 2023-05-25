@@ -77,7 +77,7 @@ namespace SARP.Entitys
                 StopCoroutine(movingProcess);
                 movingState.Interrupt();
             }
-            movingProcess = StartCoroutine(MovingTo(target, processState, inPlane));
+            movingProcess = StartCoroutine(MovingTo(target, processState, align, inPlane));
             movingState = processState;
         }
         public void MoveTo(Transform target, ProcessState processState, bool align = false, bool inheritRotation = false, bool inPlane = false)
@@ -124,17 +124,18 @@ namespace SARP.Entitys
             Quaternion rot = Quaternion.LookRotation(direction.normalized, ThisTransorm.up);
             targetAngle = Vector3.Angle(ThisTransorm.forward, direction);
             acceleration = ((targetAngle) / 180f);
-            Vector3 translation = ThisTransorm.forward * MoveSpeed * Time.deltaTime * Mathf.Pow(acceleration, 2);
+            Vector3 translation = ThisTransorm.forward * MoveSpeed * Time.deltaTime;
+            Quaternion roatation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed / Mathf.Pow(acceleration, 2));
             if (CharacterController != null)
             {
-                ThisTransorm.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed);
+                ThisTransorm.rotation = roatation;
                 CharacterController.Move(translation);
             }
             else if (Movablebody != null)
             {
                 if (Movablebody.isKinematic)
                 {
-                    Movablebody.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed);
+                    Movablebody.rotation = roatation;
                     Movablebody.MovePosition(Movablebody.position + translation);
                 }
                 else
@@ -144,10 +145,10 @@ namespace SARP.Entitys
             }
             else
             {
-                ThisTransorm.rotation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed);
+                ThisTransorm.rotation = roatation;
                 ThisTransorm.Translate(translation, Space.World);
             }
-        }    
+        }
 
         private IEnumerator MovingTo(Transform target, ProcessState processState, bool align = false, bool inheritRotation = false, bool inPlane = false)
         {
