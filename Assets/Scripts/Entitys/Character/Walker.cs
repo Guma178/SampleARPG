@@ -51,12 +51,17 @@ namespace SARP.Entitys
 
         public void Walk(Vector3 target, ProcessState state, float accuracy = 0)
         {
-            Mover.MoveTo(target, state, 0, false, true);
+            Mover.MoveTo(target, state, accuracy, false, true);
         }
 
         public void Walk(Transform target, ProcessState state, float accuracy = 0)
         {
             Mover.MoveTo(target, state, accuracy, false, false, true);
+        }
+
+        public void StopWalk()
+        {
+            Mover.StopMove();
         }
     }
 }

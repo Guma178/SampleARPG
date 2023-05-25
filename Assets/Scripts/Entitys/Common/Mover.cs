@@ -103,21 +103,13 @@ namespace SARP.Entitys
 
         public void MoveTo(Vector3 target, ProcessState processState, float accuracy = 0, bool align = false, bool inPlane = false)
         {
-            if (movingProcess != null && movingState != null)
-            {
-                StopCoroutine(movingProcess);
-                movingState.Interrupt();
-            }
+            StopMove();
             movingProcess = StartCoroutine(MovingTo(target, processState, accuracy, align, inPlane));
             movingState = processState;
         }
         public void MoveTo(Transform target, ProcessState processState, float accuracy = 0, bool align = false, bool inheritRotation = false, bool inPlane = false)
         {
-            if (movingProcess != null && movingState != null)
-            {
-                StopCoroutine(movingProcess);
-                movingState.Interrupt();
-            }
+            StopMove();
             movingProcess = StartCoroutine(MovingTo(target, processState, accuracy, align, inheritRotation, inPlane));
             movingState = processState;
         }
@@ -148,6 +140,14 @@ namespace SARP.Entitys
                 ThisTransorm.rotation = rotation;
             }
         }
+        public void StopMove()
+        {
+            if (movingProcess != null && movingState != null)
+            {
+                StopCoroutine(movingProcess);
+                movingState.Interrupt();
+            }
+        }
 
         private void Toward(Vector3 direction, bool inPlane = false)
         {
@@ -158,7 +158,7 @@ namespace SARP.Entitys
             targetAngle = Vector3.Angle(ThisTransorm.forward, direction);
             acceleration = ((targetAngle) / 180f);
             Vector3 translation = ThisTransorm.forward * MoveSpeed * Time.deltaTime;
-            Quaternion roatation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed / Mathf.Pow(acceleration, 2));
+            Quaternion roatation = Quaternion.Lerp(ThisTransorm.rotation, rot, Time.deltaTime * RotationSpeed * MoveSpeed / acceleration);
             if (CharacterController != null)
             {
                 ThisTransorm.rotation = roatation;
@@ -187,6 +187,8 @@ namespace SARP.Entitys
         {
             float selfSize;
             Vector3 toTarget;
+
+            yield return new WaitForEndOfFrame();
 
             selfSize = Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2;
             toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
@@ -235,6 +237,8 @@ namespace SARP.Entitys
         {
             float selfSize;
             Vector3 toTarget;
+
+            yield return new WaitForEndOfFrame();
 
             selfSize = Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2;
             toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);

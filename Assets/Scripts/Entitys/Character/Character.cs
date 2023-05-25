@@ -109,8 +109,12 @@ namespace SARP.Entitys
             }
         }
 
-        private void Start()
+        protected void Start()
         {
+            Victim.Died += delegate ()
+            {
+                Walker.StopWalk();
+            };
         }
     }
 }

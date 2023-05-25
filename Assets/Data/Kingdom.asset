@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60e2d735359eadb45a071cb649eb946c, type: 3}
-  m_Name: Demons
+  m_Name: Kingdom
   m_EditorClassIdentifier: 
-  factionName: Demons
+  factionName: Kingdom
   enemys:
+  - {fileID: 11400000, guid: e9c35d5e93b084b458b557380adf67c8, type: 2}
   - {fileID: 11400000, guid: 3039aefa04253da448d2f7cfc2bab56a, type: 2}
-  - {fileID: 11400000, guid: 943356d4c695b474b9545218e951d625, type: 2}

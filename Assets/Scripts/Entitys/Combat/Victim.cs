@@ -82,7 +82,15 @@ namespace SARP.Entitys
         {
             Health = maximalHealth;
 
-            Died += delegate () { Animator.SetBool("Dead", true); };
+            Died += delegate () 
+            { 
+                Collider collider = GetComponent<Collider>();
+                if (collider != null)
+                {
+                    collider.enabled = false;
+                }
+                Animator.SetBool("Dead", true); 
+            };
         }
 
         public void Hit(float power)

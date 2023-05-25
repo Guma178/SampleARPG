@@ -27,7 +27,7 @@ namespace SARPG.UI
         public void Draw(float radius)
         {
             theta = 0f;
-            size = (int)((1f / ThetaScale * radius) + 1f);
+            size = (int)((1f / ThetaScale ) + 1f);
             LineDrawer.positionCount = size;
             for (int i = 0; i < size; i++)
             {
@@ -37,6 +37,11 @@ namespace SARPG.UI
                 float y = radius * Mathf.Sin(theta);
                 LineDrawer.SetPosition(i, new Vector3(x, 0, y));
             }
+        }
+
+        public void Turn(bool state)
+        {
+            LineDrawer.enabled = state;
         }
     }
 }

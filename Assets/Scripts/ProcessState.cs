@@ -7,26 +7,37 @@ namespace SARP
 {
     public class ProcessState
     {
+        public bool IsFinished { get; private set; }
+
         public event System.Action Completed, Interrupted, Finished;
 
         public void Interrupt()
         {
-            Interrupted?.Invoke();
-            Finished?.Invoke();
+            if (!IsFinished)
+            {
+                Interrupted?.Invoke();
+                Finished?.Invoke();
+            }
         }
 
         public void Complet()
         {
-            Completed?.Invoke();
-            Finished?.Invoke();
+            if (!IsFinished)
+            {
+                IsFinished = true;
+                Completed?.Invoke();
+                Finished?.Invoke();
+            }
         }
 
         public ProcessState()
         {
+            IsFinished = false;
         }
 
         public ProcessState(System.Action onCompleted, System.Action onInterrupted)
         {
+            IsFinished = false;
             Completed += onCompleted;
             Interrupted += onInterrupted;
         }

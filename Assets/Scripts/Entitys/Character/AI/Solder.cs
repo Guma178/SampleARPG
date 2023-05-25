@@ -12,15 +12,19 @@ namespace SARP.Entitys
     {
         Coroutine acting;
 
-        private void Start()
+        private new void Start()
         {
+            base.Start();
             acting = StartCoroutine(Decisioning());
-            Victim.Died += delegate () { StopCoroutine(acting); };
+            Victim.Died += delegate () 
+            { 
+                StopCoroutine(acting);
+            };
         }
 
         private IEnumerator Decisioning()
         {
-            const float pathRecalcRelation = 0.25f; 
+            const float pathRecalcRelation = 0.75f; 
 
             Character enemy;
             NavMeshPath path;
@@ -73,7 +77,7 @@ namespace SARP.Entitys
                                 assaulting = true;
                                 process.Finished += delegate () { assaulting = false; };
                                 Walker.EndWalk();
-                                Walker.Walk(enemy.ThisTransorm.position - ThisTransorm.position);
+                                Walker.Walk(enemy.ThisTransorm.position, new ProcessState());
                                 Assaulter.Assault(enemy.Victim, process);
                             }
                         }
