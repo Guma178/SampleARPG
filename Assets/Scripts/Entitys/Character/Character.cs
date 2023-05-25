@@ -13,7 +13,7 @@ namespace SARP.Entitys
         public Faction Faction => faction;
 
         private System.Tuple<bool, Walker> walker = System.Tuple.Create<bool, Walker>(false, null);
-        protected Walker Walker
+        public Walker Walker
         {
             get
             {
@@ -27,7 +27,7 @@ namespace SARP.Entitys
         }
 
         private System.Tuple<bool, Assaulter> assaulter = System.Tuple.Create<bool, Assaulter>(false, null);
-        protected Assaulter Assaulter
+        public Assaulter Assaulter
         {
             get
             {
