@@ -121,14 +121,14 @@ namespace SARP.Entitys
             movingProcess = StartCoroutine(MovingTo(target, processState, accuracy, align, inheritRotation, inPlane));
             movingState = processState;
         }
-        public void Move(Vector3 direction)
+        public void Move(Vector3 direction, bool inPlane = false)
         {
             if (movingProcess != null && movingState != null)
             {
                 StopCoroutine(movingProcess);
                 movingState.Interrupt();
             }
-            Toward(direction);
+            Toward(direction, inPlane);
         }
         public void SetPosition(Vector3 position, Quaternion rotation)
         {
@@ -149,9 +149,11 @@ namespace SARP.Entitys
             }
         }
 
-        private void Toward(Vector3 direction)
+        private void Toward(Vector3 direction, bool inPlane = false)
         {
             float targetAngle, acceleration;
+
+            if (inPlane){ direction = Vector3.ProjectOnPlane(direction, ThisTransorm.up); }
             Quaternion rot = Quaternion.LookRotation(direction.normalized, ThisTransorm.up);
             targetAngle = Vector3.Angle(ThisTransorm.forward, direction);
             acceleration = ((targetAngle) / 180f);
