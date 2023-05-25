@@ -10,58 +10,79 @@ namespace SARP.Entitys
 {
     public class Solder : IntelligenceCharacter
     {
-        [SerializeField]
-        Transform dst;
+        Coroutine acting;
 
-        private void FixedUpdate()
+        private void Start()
         {
-            Decision();
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
-            {
-                Debug.Log("KeyCode.Space");
-                Walker.Walk(dst.position, new ProcessState());
-            }
+            acting = StartCoroutine(Decisioning());
+            Victim.Died += delegate () { StopCoroutine(acting); };
         }
 
-        private void Decision()
+        private IEnumerator Decisioning()
         {
+            const float pathRecalcRelation = 0.25f; 
+
+            Character enemy;
             NavMeshPath path;
             ProcessState process;
-            IEnumerable<Character> charactersInView;
+            Vector3 targetPathPosition, toDestination;
+            int stepInd = 0;
 
-            if (Victim.Health > 0)
+            while (true)
             {
-                charactersInView = ObjectsInView<Character>();
-                foreach (Character ch in charactersInView)
+                enemy = ObjectsInView<Character>().FirstOrDefault(ch => ch.Victim.Health > 0 && Faction.Enemys.Any(ef => ef == ch.Faction));
+
+                if (enemy != null)
                 {
-                    if (Faction.Enemys.Any(f => f == ch.Faction))
+                    targetPathPosition = enemy.ThisTransorm.position;
+                    path = new NavMeshPath();
+                    stepInd = 0;
+                    if (NavMesh.CalculatePath(ThisTransorm.position, enemy.ThisTransorm.position, NavMesh.AllAreas, path))
                     {
-                        if ((ch.ThisTransorm.position - ThisTransorm.position).magnitude > Assaulter.AttackRange)
+                        Walker.BeginWalk();
+                        while ((enemy.ThisTransorm.position - ThisTransorm.position).magnitude > Assaulter.AttackRange
+                            && enemy.Victim.Health > 0)
                         {
-                            if (ch.Victim.Health > 0)
+                            if ((targetPathPosition - enemy.ThisTransorm.position).magnitude /
+                                (enemy.ThisTransorm.position - ThisTransorm.position).magnitude > 
+                                pathRecalcRelation)
                             {
                                 path = new NavMeshPath();
-                                if (NavMesh.CalculatePath(ThisTransorm.position, ch.ThisTransorm.position, NavMesh.AllAreas, path))
+                                stepInd = 0;
+                                targetPathPosition = enemy.ThisTransorm.position;
+                                if (!NavMesh.CalculatePath(ThisTransorm.position, enemy.ThisTransorm.position, NavMesh.AllAreas, path))
                                 {
-                                    process = new ProcessState();
-                                    if (path.corners.Length >= 2)
-                                    {
-                                        Walker.Walk(path.corners[1], process, Vector3.ProjectOnPlane(ch.Size, ch.ThisTransorm.up).magnitude / 2);
-                                    }
+                                    break;
                                 }
                             }
-                        }
-                        else
-                        {
-                            if (ch.Victim.Health > 0)
+
+                            if (stepInd < path.corners.Length)
                             {
-                                process = new ProcessState();
-                                Walker.Walk(ch.ThisTransorm.position, process, Vector3.ProjectOnPlane(ch.Size, ch.ThisTransorm.up).magnitude / 2);
-                                Assaulter.Assault(ch.Victim);
+                                toDestination = path.corners[stepInd] - ThisTransorm.position;
+                                Walker.Walk(toDestination);
+                                yield return new WaitForEndOfFrame();
+                                if (toDestination.magnitude < Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2)
+                                {
+                                    stepInd++;
+                                }
                             }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        Walker.EndWalk();
+
+                        if (enemy.Victim.Health > 0)
+                        {
+                            process = new ProcessState();
+                            Walker.Walk(enemy.ThisTransorm.position, process, Vector3.ProjectOnPlane(enemy.Size, enemy.ThisTransorm.up).magnitude / 2);
+                            Assaulter.Assault(enemy.Victim);
                         }
                     }
                 }
+
+                yield return new WaitForFixedUpdate();
             }
         }
     }
