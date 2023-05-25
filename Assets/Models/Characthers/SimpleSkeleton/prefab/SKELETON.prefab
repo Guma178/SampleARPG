@@ -1162,7 +1162,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 5
   moveSpeed: 1
-  bodyrenderer: {fileID: 403666061863457717}
 --- !u!114 &4359365008518139177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1218,6 +1217,7 @@ MonoBehaviour:
   viewRadius: 4
   viewAngle: 60
   feelRadius: 1.5
+  dst: {fileID: 0}
 --- !u!1 &403666061868670693
 GameObject:
   m_ObjectHideFlags: 0

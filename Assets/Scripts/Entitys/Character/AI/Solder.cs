@@ -46,7 +46,7 @@ namespace SARP.Entitys
                                     process = new ProcessState();
                                     if (path.corners.Length >= 2)
                                     {
-                                        Walker.Walk(path.corners[1], process);
+                                        Walker.Walk(path.corners[1], process, Vector3.ProjectOnPlane(ch.Size, ch.ThisTransorm.up).magnitude / 2);
                                     }
                                 }
                             }
@@ -56,7 +56,7 @@ namespace SARP.Entitys
                             if (ch.Victim.Health > 0)
                             {
                                 process = new ProcessState();
-                                //Walker.Walk(ch.ThisTransorm.position, process);
+                                Walker.Walk(ch.ThisTransorm.position, process, Vector3.ProjectOnPlane(ch.Size, ch.ThisTransorm.up).magnitude / 2);
                                 Assaulter.Assault(ch.Victim);
                             }
                         }
