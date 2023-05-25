@@ -45,6 +45,11 @@ namespace SARP.Entitys
             }
         }
 
+        public virtual float MaximalHealth
+        {
+            get { return maximalHealth; }
+        }
+
         private Transform thisTransorm;
         public Transform ThisTransorm
         {
