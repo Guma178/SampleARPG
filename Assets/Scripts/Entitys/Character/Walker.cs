@@ -58,17 +58,17 @@ namespace SARP.Entitys
             }
         }
 
-        public void Walk(Vector3 target, ProcessState state)
+        public void Walk(Vector3 target, ProcessState state, float accuracy = 0)
         {
             state.Finished += delegate () { EndWalk(); };
-            Mover.MoveTo(target, state, false, true);
+            Mover.MoveTo(target, state, 0, false, true);
             BeginWalk();
         }
 
-        public void Walk(Transform target, ProcessState state)
+        public void Walk(Transform target, ProcessState state, float accuracy = 0)
         {
             state.Finished += delegate () { EndWalk(); };
-            Mover.MoveTo(target, state, false, false, true);
+            Mover.MoveTo(target, state, accuracy, false, false, true);
             BeginWalk();
         }
     }

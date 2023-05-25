@@ -48,6 +48,47 @@ namespace SARP.Entitys
             }
         }
 
+        Vector3 size = Vector3.zero;
+        public Vector3 Size
+        {
+            get 
+            {
+                if (size == Vector3.zero)
+                {
+                    Collider collider = GetComponent<Collider>();
+                    if (collider != null)
+                    {
+                        size = collider.bounds.size;
+                    }
+                    else
+                    {
+                        Renderer renderer = GetComponent<Renderer>();
+                        if (renderer != null)
+                        {
+                            size = renderer.bounds.size;
+                        }
+                        else
+                        {
+                            Renderer[] renderers = GetComponentsInChildren<Renderer>();
+                            foreach (Renderer r in renderers)
+                            {
+                                if (r.bounds.size.magnitude > size.magnitude)
+                                {
+                                    size = r.bounds.size;
+                                }
+                            }
+                            if (size == Vector3.zero)
+                            {
+                                size = new Vector3(1, 1, 1);
+                            }
+                        }
+                    }
+                }
+
+                return size;
+            }
+        }
+
         private void Start()
         {
             if (Victim != null)

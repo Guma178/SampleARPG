@@ -11,9 +11,6 @@ namespace SARP.Entitys
         [SerializeField]
         float rotationSpeed, moveSpeed;
 
-        [SerializeField]
-        Renderer bodyrenderer;
-
         public float RotationSpeed => rotationSpeed;
         public float MoveSpeed => moveSpeed;
 
@@ -31,13 +28,47 @@ namespace SARP.Entitys
             }
         }
 
-        private Renderer Renderer
+        Vector3 size = Vector3.zero;
+        private Vector3 Size
         {
             get
             {
-                return bodyrenderer;
+                if (size == Vector3.zero)
+                {
+                    Collider collider = GetComponent<Collider>();
+                    if (collider != null)
+                    {
+                        size = collider.bounds.size;
+                    }
+                    else
+                    {
+                        Renderer renderer = GetComponent<Renderer>();
+                        if (renderer != null)
+                        {
+                            size = renderer.bounds.size;
+                        }
+                        else
+                        {
+                            Renderer[] renderers = GetComponentsInChildren<Renderer>();
+                            foreach (Renderer r in renderers)
+                            {
+                                if (r.bounds.size.magnitude > size.magnitude)
+                                {
+                                    size = r.bounds.size;
+                                }
+                            }
+                            if (size == Vector3.zero)
+                            {
+                                size = new Vector3(1, 1, 1);
+                            }
+                        }
+                    }
+                }
+
+                return size;
             }
         }
+
         private System.Tuple<bool, CharacterController> characterController = System.Tuple.Create<bool, CharacterController>(false, null);
         private CharacterController CharacterController
         {
@@ -70,25 +101,25 @@ namespace SARP.Entitys
         private ProcessState movingState;
 
 
-        public void MoveTo(Vector3 target, ProcessState processState, bool align = false, bool inPlane = false)
+        public void MoveTo(Vector3 target, ProcessState processState, float accuracy = 0, bool align = false, bool inPlane = false)
         {
             if (movingProcess != null && movingState != null)
             {
                 StopCoroutine(movingProcess);
                 movingState.Interrupt();
             }
-            movingProcess = StartCoroutine(MovingTo(target, processState, align, inPlane));
+            movingProcess = StartCoroutine(MovingTo(target, processState, accuracy, align, inPlane));
             movingState = processState;
         }
-        public void MoveTo(Transform target, ProcessState processState, bool align = false, bool inheritRotation = false, bool inPlane = false)
+        public void MoveTo(Transform target, ProcessState processState, float accuracy = 0, bool align = false, bool inheritRotation = false, bool inPlane = false)
         {
             if (movingProcess != null && movingState != null)
             {
                 StopCoroutine(movingProcess);
                 movingState.Interrupt();
             }
-            movingProcess = StartCoroutine(MovingTo(target, processState, align, inheritRotation, inPlane));
-            movingState = processState;
+            movingProcess = StartCoroutine(MovingTo(target, processState, accuracy, align, inheritRotation, inPlane));
+            movingState = processState; 
         }
         public void Move(Vector3 direction)
         {
@@ -150,12 +181,12 @@ namespace SARP.Entitys
             }
         }
 
-        private IEnumerator MovingTo(Transform target, ProcessState processState, bool align = false, bool inheritRotation = false, bool inPlane = false)
+        private IEnumerator MovingTo(Transform target, ProcessState processState, float accuracy = 0, bool align = false, bool inheritRotation = false, bool inPlane = false)
         {
             Vector3 toTarget;
 
             toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
-            while (toTarget.magnitude > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.forward).magnitude / 2f + MoveSpeed * Time.deltaTime * 2)
+            while (toTarget.magnitude > Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2f + MoveSpeed * Time.deltaTime * 2 + accuracy)
             {
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
                 Toward(toTarget);
@@ -196,12 +227,12 @@ namespace SARP.Entitys
             movingProcess = null;
             movingState = null;
         }
-        private IEnumerator MovingTo(Vector3 target, ProcessState processState, bool align = false, bool inPlane = false)
+        private IEnumerator MovingTo(Vector3 target, ProcessState processState, float accuracy = 0,  bool align = false, bool inPlane = false)
         {
             Vector3 toTarget;
 
             toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
-            while (toTarget.magnitude > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.forward).magnitude / 2 + MoveSpeed * Time.deltaTime * 2)
+            while (toTarget.magnitude > Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2 + MoveSpeed * Time.deltaTime * 2 + accuracy)
             {
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
                 Toward(toTarget);
