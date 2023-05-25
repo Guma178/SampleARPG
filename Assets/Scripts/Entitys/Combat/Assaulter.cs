@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace SARP.Entitys
@@ -41,10 +42,12 @@ namespace SARP.Entitys
         }
 
         private Victim victim;
+        private ProcessState process;
 
-        public void Assault(Victim victim)
-        { 
+        public void Assault(Victim victim, ProcessState process)
+        {
             this.victim = victim;
+            this.process = process;
             Animator.SetTrigger("Attack");
         }
 
@@ -52,8 +55,10 @@ namespace SARP.Entitys
         {
             Vector3 distance;
 
-            if (victim != null)
+            if (victim != null && process != null)
             {
+                process.Complet();
+
                 distance = victim.ThisTransorm.position - ThisTransorm.position;
                 if (distance.magnitude <= AttackRange)
                 {
