@@ -91,10 +91,6 @@ namespace SARP.Entitys
 
         private void Start()
         {
-            if (Victim != null)
-            {
-                Victim.Died += delegate () { Walker.Able = false; Assaulter.Able = false; };
-            }
         }
     }
 }
