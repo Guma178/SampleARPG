@@ -155,7 +155,7 @@ namespace SARP.Entitys
             Vector3 toTarget;
 
             toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
-            while (toTarget.magnitude > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude * 0.2f + MoveSpeed * Time.deltaTime * 2)
+            while (toTarget.magnitude > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.forward).magnitude / 2f + MoveSpeed * Time.deltaTime * 2)
             {
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target.position - ThisTransorm.position), ThisTransorm.up) : (target.position - ThisTransorm.position);
                 Toward(toTarget);
@@ -201,7 +201,7 @@ namespace SARP.Entitys
             Vector3 toTarget;
 
             toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
-            while (toTarget.magnitude > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.up).magnitude * 0.2f + MoveSpeed * Time.deltaTime * 2)
+            while (toTarget.magnitude > Vector3.ProjectOnPlane(Renderer.bounds.size, ThisTransorm.forward).magnitude / 2 + MoveSpeed * Time.deltaTime * 2)
             {
                 toTarget = inPlane ? Vector3.ProjectOnPlane((target - ThisTransorm.position), ThisTransorm.up) : (target - ThisTransorm.position);
                 Toward(toTarget);
