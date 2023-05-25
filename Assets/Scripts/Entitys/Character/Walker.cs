@@ -46,7 +46,7 @@ namespace SARP.Entitys
 
         public void Walk(Vector3 direction)
         {
-            Mover.Move(direction);
+            Mover.Move(direction, true);
         }
 
         public void Walk(Vector3 target, ProcessState state, float accuracy = 0)

@@ -58,7 +58,7 @@ namespace SARP.Entitys
                 if (distance.magnitude <= AttackRange)
                 {
                     float angle = Vector3.Angle(ThisTransorm.forward, distance.normalized);
-                    if (Vector3.Angle(ThisTransorm.forward, distance.normalized) < 25)
+                    if (Vector3.Angle(ThisTransorm.forward, distance.normalized) < 45)
                     {
                         victim.Hit(AttackPower);
                     }

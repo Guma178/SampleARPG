@@ -27,6 +27,7 @@ namespace SARP.Entitys
             ProcessState process;
             Vector3 targetPathPosition, toDestination;
             int stepInd = 0;
+            bool withinReach;
 
             while (true)
             {
@@ -37,51 +38,43 @@ namespace SARP.Entitys
                     targetPathPosition = enemy.ThisTransorm.position;
                     path = new NavMeshPath();
                     stepInd = 0;
-                    if (NavMesh.CalculatePath(ThisTransorm.position, enemy.ThisTransorm.position, NavMesh.AllAreas, path))
+                    withinReach = NavMesh.CalculatePath(ThisTransorm.position, enemy.ThisTransorm.position, NavMesh.AllAreas, path);
+                    while (enemy.Victim.Health > 0)
                     {
-                        Walker.BeginWalk();
-                        while ((enemy.ThisTransorm.position - ThisTransorm.position).magnitude > Assaulter.AttackRange
-                            && enemy.Victim.Health > 0)
+                        if ((enemy.ThisTransorm.position - ThisTransorm.position).magnitude > Assaulter.AttackRange && withinReach)
                         {
+                            Walker.BeginWalk();
                             if ((targetPathPosition - enemy.ThisTransorm.position).magnitude /
-                                (enemy.ThisTransorm.position - ThisTransorm.position).magnitude > 
-                                pathRecalcRelation)
+                                    (enemy.ThisTransorm.position - ThisTransorm.position).magnitude >
+                                    pathRecalcRelation)
                             {
                                 path = new NavMeshPath();
                                 stepInd = 0;
                                 targetPathPosition = enemy.ThisTransorm.position;
-                                if (!NavMesh.CalculatePath(ThisTransorm.position, enemy.ThisTransorm.position, NavMesh.AllAreas, path))
-                                {
-                                    break;
-                                }
+                                withinReach = NavMesh.CalculatePath(ThisTransorm.position, enemy.ThisTransorm.position, NavMesh.AllAreas, path);
                             }
 
                             if (stepInd < path.corners.Length)
                             {
                                 toDestination = path.corners[stepInd] - ThisTransorm.position;
                                 Walker.Walk(toDestination);
-                                yield return new WaitForEndOfFrame();
                                 if (toDestination.magnitude < Vector3.ProjectOnPlane(Size, ThisTransorm.up).magnitude / 2)
                                 {
                                     stepInd++;
                                 }
                             }
-                            else
-                            {
-                                break;
-                            }
                         }
-                        Walker.EndWalk();
-
-                        if (enemy.Victim.Health > 0)
+                        else
                         {
                             process = new ProcessState();
-                            Walker.Walk(enemy.ThisTransorm.position, process, Vector3.ProjectOnPlane(enemy.Size, enemy.ThisTransorm.up).magnitude / 2);
+                            Walker.EndWalk();
+                            Walker.Walk(enemy.ThisTransorm.position - ThisTransorm.position);
                             Assaulter.Assault(enemy.Victim);
                         }
+
+                        yield return new WaitForEndOfFrame();
                     }
                 }
-
                 yield return new WaitForFixedUpdate();
             }
         }
