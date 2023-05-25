@@ -1,3 +1,4 @@
+using SARP.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,11 @@ namespace SARP.Entitys
 {
     public class Character : MonoBehaviour
     {
+        [SerializeField]
+        Faction faction;
+
+        public Faction Faction => faction;
+
         private System.Tuple<bool, Walker> walker = System.Tuple.Create<bool, Walker>(false, null);
         protected Walker Walker
         {
@@ -35,7 +41,7 @@ namespace SARP.Entitys
         }
 
         private System.Tuple<bool, Victim> victim = System.Tuple.Create<bool, Victim>(false, null);
-        protected Victim Victim
+        public Victim Victim
         {
             get
             {
@@ -48,12 +54,22 @@ namespace SARP.Entitys
             }
         }
 
+        private Transform thisTransorm;
+        public Transform ThisTransorm
+        {
+            get
+            {
+                if (thisTransorm == null)
+                {
+                    thisTransorm = this.transform;
+                }
+
+                return thisTransorm;
+            }
+        }
+
         private void Start()
         {
-            if (Victim != null)
-            {
-                Victim.Died += delegate () { Walker.Able = false; Assaulter.Able = false; };
-            }
         }
     }
 }

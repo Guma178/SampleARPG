@@ -1087,7 +1087,7 @@ GameObject:
   - component: {fileID: 4359365008518139177}
   - component: {fileID: 3681912580773189671}
   - component: {fileID: 5738551521881323116}
-  - component: {fileID: 6869050146952516285}
+  - component: {fileID: 7695698829919333015}
   m_Layer: 0
   m_Name: SKELETON
   m_TagString: Untagged
@@ -1161,7 +1161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 5
-  moveSpeed: 3
+  moveSpeed: 1
   bodyrenderer: {fileID: 403666061863457717}
 --- !u!114 &4359365008518139177
 MonoBehaviour:
@@ -1187,7 +1187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09e882ff6232361428657650aa3a0182, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 0.7
+  attackRange: 2.5
   attackPower: 3
 --- !u!114 &5738551521881323116
 MonoBehaviour:
@@ -1202,28 +1202,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maximalHealth: 40
---- !u!195 &6869050146952516285
-NavMeshAgent:
+--- !u!114 &7695698829919333015
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403666061868670691}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.25
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 1.2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 2
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 212e19dc77ef01248a4c46d537ff5c5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  faction: {fileID: 11400000, guid: e9c35d5e93b084b458b557380adf67c8, type: 2}
+  viewRadius: 4
+  viewAngle: 60
+  feelRadius: 1.5
 --- !u!1 &403666061868670693
 GameObject:
   m_ObjectHideFlags: 0

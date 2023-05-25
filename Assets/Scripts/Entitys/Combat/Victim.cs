@@ -9,12 +9,6 @@ namespace SARP.Entitys
         [SerializeField]
         float maximalHealth;
 
-        public bool Able
-        {
-            get;
-            private set;
-        }
-
         public event System.Action<float> HealthChanged;
         public event System.Action Died;
 
@@ -39,7 +33,6 @@ namespace SARP.Entitys
 
                 if (value < 0)
                 {
-                    Able = false;
                     health = 0;
                 }
 
@@ -48,7 +41,7 @@ namespace SARP.Entitys
                     Died?.Invoke();
                 }
 
-                HealthChanged?.Invoke(value);
+                HealthChanged?.Invoke(health);
             }
         }
 
@@ -66,12 +59,32 @@ namespace SARP.Entitys
             }
         }
 
+        private System.Tuple<bool, Animator> animator = System.Tuple.Create<bool, Animator>(false, null);
+        private Animator Animator
+        {
+            get
+            {
+                if (!animator.Item1)
+                {
+                    animator = System.Tuple.Create<bool, Animator>(true, this.GetComponent<Animator>());
+                }
+
+                return animator.Item2;
+            }
+        }
+
+        private void Start()
+        {
+            Health = maximalHealth;
+
+            Died += delegate () { Animator.SetBool("Dead", true); };
+            HealthChanged += delegate (float h) { Debug.Log("Name " + gameObject.name + " health " + h); };
+        }
+
         public void Hit(float power)
         {
-            if (Able)
-            {
-                Health -= power;
-            }
+            Health -= power;
+            Animator.SetTrigger("Hit");
         }
     }
 }

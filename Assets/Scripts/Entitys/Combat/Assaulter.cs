@@ -9,12 +9,6 @@ namespace SARP.Entitys
         [SerializeField]
         float attackRange, attackPower;
 
-        public bool Able
-        {
-            get;
-            set;
-        }
-
         public virtual float AttackRange => attackRange;
         public virtual float AttackPower => attackPower;
 
@@ -32,12 +26,35 @@ namespace SARP.Entitys
             }
         }
 
-        public void Attack(Victim victim)
-        { 
-            Vector3 distance = victim.ThisTransorm.position - thisTransorm.position;
-
-            if (Able)
+        private System.Tuple<bool, Animator> animator = System.Tuple.Create<bool, Animator>(false, null);
+        private Animator Animator
+        {
+            get
             {
+                if (!animator.Item1)
+                {
+                    animator = System.Tuple.Create<bool, Animator>(true, this.GetComponent<Animator>());
+                }
+
+                return animator.Item2;
+            }
+        }
+
+        private Victim victim;
+
+        public void Assault(Victim victim)
+        { 
+            this.victim = victim;
+            Animator.SetTrigger("Attack");
+        }
+
+        private void Attack()
+        {
+            Vector3 distance;
+
+            if (victim != null)
+            {
+                distance = victim.ThisTransorm.position - ThisTransorm.position;
                 if (distance.magnitude <= AttackRange)
                 {
                     if (Vector3.Angle(ThisTransorm.forward, distance.normalized) < 25)

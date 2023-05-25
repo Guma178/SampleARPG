@@ -7,12 +7,6 @@ namespace SARP.Entitys
 {
     public class Walker : MonoBehaviour
     {
-        public bool Able
-        {
-            get;
-            set;
-        }
-
         private System.Tuple<bool, Animator> animator = System.Tuple.Create<bool, Animator>(false, null);
         private Animator Animator
         {
@@ -52,10 +46,7 @@ namespace SARP.Entitys
 
         public void Walk(Vector3 direction)
         {
-            if (Able)
-            {
-                Mover.Move(direction);
-            }
+            Mover.Move(direction);
         }
 
         public void Walk(Vector3 target, ProcessState state)
