@@ -515,6 +515,10 @@ PrefabInstance:
       propertyPath: tar
       value: 
       objectReference: {fileID: 1846549456}
+    - target: {fileID: 7695698829919333015, guid: a7de4a813103d2747a1109a59b751e7a, type: 3}
+      propertyPath: feelRadius
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7de4a813103d2747a1109a59b751e7a, type: 3}
 --- !u!1 &785644924
@@ -1544,5 +1548,9 @@ PrefabInstance:
       propertyPath: faction
       value: 
       objectReference: {fileID: 11400000, guid: 3039aefa04253da448d2f7cfc2bab56a, type: 2}
+    - target: {fileID: 7695698829919333015, guid: a7de4a813103d2747a1109a59b751e7a, type: 3}
+      propertyPath: feelRadius
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7de4a813103d2747a1109a59b751e7a, type: 3}

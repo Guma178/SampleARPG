@@ -65,7 +65,7 @@ namespace SARP.Entitys
             return inView;
         }
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(ThisTransorm.position + ThisTransorm.forward * viewRadius, viewRadius);

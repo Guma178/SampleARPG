@@ -27,7 +27,7 @@ namespace SARP.Entitys
             ProcessState process;
             Vector3 targetPathPosition, toDestination;
             int stepInd = 0;
-            bool withinReach;
+            bool withinReach, assaulting;
 
             while (true)
             {
@@ -35,6 +35,7 @@ namespace SARP.Entitys
 
                 if (enemy != null)
                 {
+                    assaulting = false;
                     targetPathPosition = enemy.ThisTransorm.position;
                     path = new NavMeshPath();
                     stepInd = 0;
@@ -66,10 +67,15 @@ namespace SARP.Entitys
                         }
                         else
                         {
-                            process = new ProcessState();
-                            Walker.EndWalk();
-                            Walker.Walk(enemy.ThisTransorm.position - ThisTransorm.position);
-                            Assaulter.Assault(enemy.Victim);
+                            if (!assaulting)
+                            {
+                                process = new ProcessState();
+                                assaulting = true;
+                                process.Finished += delegate () { assaulting = false; };
+                                Walker.EndWalk();
+                                Walker.Walk(enemy.ThisTransorm.position - ThisTransorm.position);
+                                Assaulter.Assault(enemy.Victim, process);
+                            }
                         }
 
                         yield return new WaitForEndOfFrame();
