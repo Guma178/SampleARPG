@@ -10,44 +10,55 @@ namespace SARP.Entitys
 {
     public class Solder : IntelligenceCharacter
     {
+        [SerializeField]
+        Transform dst;
+
         private void FixedUpdate()
         {
             Decision();
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("KeyCode.Space");
+                Walker.Walk(dst.position, new ProcessState());
+            }
         }
 
         private void Decision()
         {
             NavMeshPath path;
+            ProcessState process;
             IEnumerable<Character> charactersInView;
 
-            charactersInView = ObjectsInView<Character>();
-            foreach (Character ch in charactersInView)
+            if (Victim.Health > 0)
             {
-                if (Faction.Enemys.Any(f => f == ch.Faction))
+                charactersInView = ObjectsInView<Character>();
+                foreach (Character ch in charactersInView)
                 {
-                    if ((ch.ThisTransorm.position - ThisTransorm.position).magnitude > Assaulter.AttackRange)
+                    if (Faction.Enemys.Any(f => f == ch.Faction))
                     {
-                        if (ch.Victim.Health > 0)
+                        if ((ch.ThisTransorm.position - ThisTransorm.position).magnitude > Assaulter.AttackRange)
                         {
-                            path = new NavMeshPath();
-                            if (NavMesh.CalculatePath(ThisTransorm.position, ch.ThisTransorm.position, NavMesh.AllAreas, path))
+                            if (ch.Victim.Health > 0)
                             {
-                                if (path.corners.Length > 2)
+                                path = new NavMeshPath();
+                                if (NavMesh.CalculatePath(ThisTransorm.position, ch.ThisTransorm.position, NavMesh.AllAreas, path))
                                 {
-                                    Walker.Walk(path.corners[1], new ProcessState());
-                                }
-                                else if (path.corners.Length == 2)
-                                {
-                                    Walker.Walk(path.corners[1] - (path.corners[1] - path.corners[0]).normalized * (Assaulter.AttackRange / 2), new ProcessState());
+                                    process = new ProcessState();
+                                    if (path.corners.Length >= 2)
+                                    {
+                                        Walker.Walk(path.corners[1], process);
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        if (ch.Victim.Health > 0)
+                        else
                         {
-                            Assaulter.Assault(ch.Victim);
+                            if (ch.Victim.Health > 0)
+                            {
+                                process = new ProcessState();
+                                //Walker.Walk(ch.ThisTransorm.position, process);
+                                Assaulter.Assault(ch.Victim);
+                            }
                         }
                     }
                 }

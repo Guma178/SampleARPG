@@ -78,7 +78,6 @@ namespace SARP.Entitys
             Health = maximalHealth;
 
             Died += delegate () { Animator.SetBool("Dead", true); };
-            HealthChanged += delegate (float h) { Debug.Log("Name " + gameObject.name + " health " + h); };
         }
 
         public void Hit(float power)
