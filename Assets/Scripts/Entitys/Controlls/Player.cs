@@ -61,7 +61,7 @@ namespace SARP.Entitys
         void Update()
         {
 #if UNITY_EDITOR || UNITY_STANDALONE
-            if (Victim.Health > 0 & false)
+            if (Victim.Health > 0)
             {
                 if (UnityEngine.Input.GetMouseButton(0))
                 {
