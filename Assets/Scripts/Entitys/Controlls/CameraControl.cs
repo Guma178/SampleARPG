@@ -1,3 +1,4 @@
+using SARPG.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,9 @@ namespace SARP.Entitys
 {
     public class CameraControl : MonoBehaviour
     {
+        [SerializeField]
+        Joystick movementStick;
+
         [SerializeField]
         private Transform targetTransform;
 
@@ -72,7 +76,6 @@ namespace SARP.Entitys
             fromTargetDirection = (CameraTransform.position - TargetPosition).normalized;
         }
 
-        // Update is called once per frame
         void LateUpdate()
         {
             Fix();
@@ -83,6 +86,11 @@ namespace SARP.Entitys
                 Rotate(new Vector2(UnityEngine.Input.GetAxis("Mouse X"), UnityEngine.Input.GetAxis("Mouse Y")));
             }
             Zoom(UnityEngine.Input.mouseScrollDelta);
+#endif
+
+#if UNITY_EDITOR || UNITY_ANDROID
+            Rotate(movementStick.Value);
+            Zoom(movementStick.Value);
 #endif
         }
     }
